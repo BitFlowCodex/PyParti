@@ -15,8 +15,8 @@ class Particle():
         self.color = color
         self.lifeTime = duration
         self.age = 0
-        self.veloX = random.uniform(-x+10,x)
-        self.veloY = random.uniform(-y+10,y)
+        self.veloX = random.uniform(-x+10.0,x)
+        self.veloY = random.uniform(-y+10.0,y)
         
     def Generate(self):
         self.x = self.veloX
@@ -24,4 +24,4 @@ class Particle():
         self.age += 1
     
     def is_alive(self):
-        return True if age >= lifeTime else False 
+        return True if self.age >= self.lifeTime else False 
