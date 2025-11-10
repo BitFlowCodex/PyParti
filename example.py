@@ -1,5 +1,5 @@
 import pygame as pg 
-import sys
+import sys, random
 from particle_class import Particle
 
 pg.init()
@@ -19,13 +19,14 @@ while running:
     
     mouse = pg.mouse.get_pos()
     if pg.mouse.get_pressed()[0]:
-        particles.append(Particle(mouse[0],mouse[1], 5.0, "white", 5))
+        particles.append(Particle(mouse[0],mouse[1], 10.0, random.choice(["red","orange"]) , 10))
 
     window.fill("black")
     for particle in particles:
         if particle.is_alive():
             particle.draw(window)
-    
+        particle.update()
+ 
     pg.display.flip()
     
     clock.tick(60)
