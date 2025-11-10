@@ -7,21 +7,28 @@ class Particle():
         x: float,
         y: float,
         duration: float,
-        color: str
+        color: str | tuple,
+        size: int 
     ) -> None:
 
         self.x = x
         self.y = y
         self.color = color
         self.lifeTime = duration
+        self.size = size
         self.age = 0
-        self.veloX = random.uniform(-x+10.0,x)
-        self.veloY = random.uniform(-y+10.0,y)
+
+        # Fixed velocity range
+        self.veloX = random.uniform(-5,5)
+        self.veloY = random.uniform(-5,5)
         
-    def Generate(self):
-        self.x = self.veloX
-        self.y = self.veloY
+    def update(self):
+        self.x += self.veloX
+        self.y += self.veloY
         self.age += 1
+
+    def draw(self, surface):
+        pg.draw.rect(surface, self.color, (self.x,self.y, self.size, self.size))
     
     def is_alive(self):
-        return True if self.age >= self.lifeTime else False 
+        return True if self.age < self.lifeTime else False 
