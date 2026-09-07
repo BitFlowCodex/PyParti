@@ -8,7 +8,7 @@ Create explosions, sparks, trails, and more with full control over size, color, 
 - A randomized velocity for natural effects
 - Automatically removes a particle when its lifetime is reached (or considered ‘dead’)
 - Optional gravity
-- Customizable (not fully yet)
+- Customizable
 
 ## Usage 
 Check out 'example.py' for a full demo of PyParti.
