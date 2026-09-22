@@ -2,7 +2,6 @@ import pygame as pg
 import sys, pyparti, random
 
 # TODO
-# ! Add delay functionality to the particle
 # ! Add gravity param for the particle (instead of only boolean)
 
 pg.init()
@@ -29,17 +28,15 @@ def explosion():
 system = pyparti.ParticleSystem()
 
 explosionPar = pyparti.Particle(
-    x=WIDTH / 2,
-    y=HEIGHT / 2,
-    size=10,
-    lifeTime=5,
+    x=WIDTH / 2, y=HEIGHT / 2, size=10, lifeTime=5, delta=dt
 )
 
 explosionEm = pyparti.Emitter(
-    particle_list=system.particles,
+    particleList=system.particles,
     particle=explosionPar,
     amount=20,
     velocity=explosion,
+    delay=5.0,
 )
 
 running = True
@@ -49,13 +46,10 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-            sys.exit
+            sys.exit()
 
-    timer -= dt
-
-    if timer <= 0:
-        explosionEm.emit()
-        timer = 2.0
+    explosionEm.update(dt)
+    system.update()
 
     screen.fill("black")
 
@@ -64,8 +58,6 @@ while running:
     system.draw(screen)
 
     pg.display.flip()
-
-    system.update()
 
 pg.quit()
 sys.exit()
