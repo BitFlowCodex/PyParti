@@ -1,5 +1,4 @@
 from .particle import Particle
-from pygame import Vector2
 
 
 class Emitter:
@@ -26,6 +25,7 @@ class Emitter:
             self.timer = self.delay
 
     def emit(self):
+        width, height = self.particle.size
         for _ in range(self.amount):
 
             newParticle = Particle(
@@ -34,7 +34,9 @@ class Emitter:
                 velocity=(self.velocity() if self.velocity else self.particle.velocity),
                 lifeTime=self.particle.lifeTime,
                 color=self.particle.color,
+                size=(width, height),
                 hasGravity=self.particle.hasGravity,
                 delta=self.particle.delta,
+                shape=self.particle.shape,
             )
             self.particleList.append(newParticle)

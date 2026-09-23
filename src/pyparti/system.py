@@ -1,4 +1,4 @@
-import random as random
+from pygame import SurfaceType
 
 
 class ParticleSystem:
@@ -14,5 +14,5 @@ class ParticleSystem:
 
     # Draws all particles onto the window
     def draw(self, screen):
-        for p in self.particles:
-            p.draw(screen)
+        for particle in self.particles:
+            particle.draw(screen)

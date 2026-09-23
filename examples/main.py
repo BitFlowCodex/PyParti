@@ -28,15 +28,15 @@ def explosion():
 system = pyparti.ParticleSystem()
 
 explosionPar = pyparti.Particle(
-    x=WIDTH / 2, y=HEIGHT / 2, size=10, lifeTime=5, delta=dt
+    x=WIDTH / 2, y=HEIGHT / 2, size=(20, 20), lifeTime=5, delta=dt, shape="rect"
 )
 
 explosionEm = pyparti.Emitter(
     particleList=system.particles,
     particle=explosionPar,
-    amount=20,
+    amount=600,
     velocity=explosion,
-    delay=5.0,
+    delay=1.0,
 )
 
 running = True
