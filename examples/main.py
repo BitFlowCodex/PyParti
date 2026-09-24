@@ -5,9 +5,7 @@ import sys, pyparti, random
 # ! Add gravity param for the particle (instead of only boolean)
 
 pg.init()
-
 WIDTH, HEIGHT = 1280, 720
-
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 clock = pg.time.Clock()
 dt = 0
@@ -21,23 +19,30 @@ def checkFPS():
     screen.blit(text, textPos)
 
 
-def explosion():
-    return pg.Vector2(random.uniform(-2, 2), random.uniform(-2, 2))
-
-
 system = pyparti.ParticleSystem()
 
-explosionPar = pyparti.Particle(
-    x=WIDTH / 2, y=HEIGHT / 2, size=(20, 20), lifeTime=5, delta=dt, shape="rect"
-)
 
-explosionEm = pyparti.Emitter(
-    particleList=system.particles,
-    particle=explosionPar,
-    amount=600,
-    velocity=explosion,
-    delay=1.0,
-)
+def explosion():
+    particle = pyparti.Particle(
+        position=pg.Vector2(WIDTH / 2, HEIGHT / 2),
+        velocityRange=((-10, 40), (0, 75)),
+        size=(10, 10),
+        lifeTime=1,
+        shape="circle",
+     
+    )
+
+    emitter = pyparti.Emitter(
+        particleList=system.particles,
+        particle=particle,
+        amount=50,
+        delay=0.2,
+    )
+
+    return emitter
+
+
+exp = explosion()
 
 running = True
 while running:
@@ -48,8 +53,8 @@ while running:
             running = False
             sys.exit()
 
-    explosionEm.update(dt)
-    system.update()
+    exp.update(dt)
+    system.update(dt)
 
     screen.fill("black")
 

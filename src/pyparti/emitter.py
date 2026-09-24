@@ -1,4 +1,6 @@
 from .particle import Particle
+from pygame import Vector2
+from random import uniform
 
 
 class Emitter:
@@ -7,13 +9,11 @@ class Emitter:
         particleList: list,
         particle: object,
         amount: int = 5,
-        velocity=None,
         delay: float = 0,
     ):
         self.particle = particle
         self.amount = amount
         self.particleList = particleList
-        self.velocity = velocity
         self.delay = delay
         self.timer = 0
 
@@ -26,17 +26,23 @@ class Emitter:
 
     def emit(self):
         width, height = self.particle.size
-        for _ in range(self.amount):
 
+        for _ in range(self.amount):
             newParticle = Particle(
-                x=self.particle.x,
-                y=self.particle.y,
-                velocity=(self.velocity() if self.velocity else self.particle.velocity),
+                position=self.particle.position.copy(),
+                velocityRange=self.particle.velocityRange,
                 lifeTime=self.particle.lifeTime,
                 color=self.particle.color,
                 size=(width, height),
-                hasGravity=self.particle.hasGravity,
-                delta=self.particle.delta,
+                gravity=self.particle.gravity,
                 shape=self.particle.shape,
             )
+
+            xRange, yRange = newParticle.velocityRange
+
+            newParticle.velocity = Vector2(
+                uniform(*xRange),
+                uniform(*yRange),
+            )
+
             self.particleList.append(newParticle)
