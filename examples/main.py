@@ -22,27 +22,17 @@ def checkFPS():
 system = pyparti.ParticleSystem()
 
 
-def explosion():
-    particle = pyparti.Particle(
-        position=pg.Vector2(WIDTH / 2, HEIGHT / 2),
-        velocityRange=((-10, 40), (0, 75)),
-        size=(10, 10),
-        lifeTime=1,
-        shape="circle",
-     
-    )
+rain = system.create_emitter(
+    position=((0, WIDTH), 0),
+    velocity=(0, HEIGHT),
+    lifetime=2,
+    color="white",
+    amount=100,
+    size=(10, 10),
+    delay=0.5,
+    shape="circle",
+)
 
-    emitter = pyparti.Emitter(
-        particleList=system.particles,
-        particle=particle,
-        amount=50,
-        delay=0.2,
-    )
-
-    return emitter
-
-
-exp = explosion()
 
 running = True
 while running:
@@ -53,7 +43,7 @@ while running:
             running = False
             sys.exit()
 
-    exp.update(dt)
+    rain.update(dt)
     system.update(dt)
 
     screen.fill("black")

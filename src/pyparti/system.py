@@ -1,6 +1,34 @@
+from .emitter import Emitter
+from .particle import Particle
+
+
 class ParticleSystem:
     def __init__(self):
         self.particles: list = []
+        self.emitters: list = []
+
+    def create_emitter(
+        self, *, position, velocity, size, lifetime, shape, color, amount, delay
+    ):
+        particle = Particle(
+            position_range=position,
+            velocity_range=velocity,
+            size=size,
+            life_time=lifetime,
+            shape=shape,
+            color=color,
+        )
+
+        emitter = Emitter(
+            particle_list=self.particles,
+            particle=particle,
+            amount=amount,
+            delay=delay,
+        )
+
+        self.emitters.append(emitter)
+
+        return emitter
 
     # Updates all particles and removes dead ones
     def update(self, delta):

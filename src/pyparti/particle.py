@@ -2,23 +2,32 @@ import pygame as pg
 
 
 class Particle:
+
     def __init__(
         self,
-        position: pg.Vector2,
-        velocityRange: (
-            tuple[float, float] | tuple[tuple[float, float], tuple[float, float]]
+        position_range: (
+            tuple[float, float]
+            | tuple[tuple[float, float], float]
+            | tuple[float, tuple[float, float]]
+            | tuple[tuple[float, float], tuple[float, float]]
+        ),
+        velocity_range: (
+            tuple[float, float]
+            | tuple[tuple[float, float], float]
+            | tuple[float, tuple[float, float]]
+            | tuple[tuple[float, float], tuple[float, float]]
         ),
         shape: str = "rect",
         size: tuple[float, float] = (0, 0),
-        lifeTime: float = 3.0,
+        life_time: float = 3.0,
         color: str | tuple = "white",
         gravity: float = 0.0,
     ):
-        self.position = position
-        self.velocityRange = self._normalize_range(velocityRange)
+        self.position_range = self._normalize_range(position_range)
+        self.velocity_range = self._normalize_range(velocity_range)
 
         self.color = color
-        self.lifeTime = lifeTime
+        self.life_time = life_time
         self.size = size
         self.gravity = gravity
         self.shape = shape
@@ -26,13 +35,12 @@ class Particle:
 
     @staticmethod
     def _normalize_range(value):
-        if isinstance(value[0], (int, float)):
-            return (
-                (-value[0], value[0]),
-                (-value[1], value[1]),
-            )
+        def normalize(v):
+            if isinstance(v, float | int):
+                return (-v, v)
+            return v
 
-        return value
+        return normalize(value[0]), normalize(value[1])
 
     def update(self, delta):
         self.velocity.y += self.gravity * delta
@@ -84,4 +92,4 @@ class Particle:
                 )
 
     def is_alive(self):
-        return self.age < self.lifeTime
+        return self.age < self.life_time

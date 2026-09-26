@@ -6,14 +6,14 @@ from random import uniform
 class Emitter:
     def __init__(
         self,
-        particleList: list,
+        particle_list: list,
         particle: object,
         amount: int = 5,
         delay: float = 0,
     ):
         self.particle = particle
         self.amount = amount
-        self.particleList = particleList
+        self.particle_list = particle_list
         self.delay = delay
         self.timer = 0
 
@@ -28,21 +28,25 @@ class Emitter:
         width, height = self.particle.size
 
         for _ in range(self.amount):
-            newParticle = Particle(
-                position=self.particle.position.copy(),
-                velocityRange=self.particle.velocityRange,
-                lifeTime=self.particle.lifeTime,
+            new_particle = Particle(
+                position_range=self.particle.position_range,
+                velocity_range=self.particle.velocity_range,
+                life_time=self.particle.life_time,
                 color=self.particle.color,
                 size=(width, height),
                 gravity=self.particle.gravity,
                 shape=self.particle.shape,
             )
 
-            xRange, yRange = newParticle.velocityRange
+            # Velocity's X and Y
+            vx_range, vy_range = new_particle.velocity_range
+            # Position's X and Y
+            px_range, py_range = new_particle.position_range
 
-            newParticle.velocity = Vector2(
-                uniform(*xRange),
-                uniform(*yRange),
+            new_particle.velocity = Vector2(
+                uniform(*vx_range),
+                uniform(*vy_range),
             )
+            new_particle.position = Vector2(uniform(*px_range), uniform(*py_range))
 
-            self.particleList.append(newParticle)
+            self.particle_list.append(new_particle)
