@@ -17,18 +17,18 @@ class Particle:
             | tuple[float, tuple[float, float]]
             | tuple[tuple[float, float], tuple[float, float]]
         ),
+        size: tuple[float, float] | tuple[float],
         shape: str = "rect",
-        size: tuple[float, float] = (0, 0),
         life_time: float = 3.0,
         color: str | tuple = "white",
         gravity: float = 0.0,
     ):
         self.position_range = self._normalize_range(position_range)
         self.velocity_range = self._normalize_range(velocity_range)
+        self.size = self._normalize_size(size)
 
         self.color = color
         self.life_time = life_time
-        self.size = size
         self.gravity = gravity
         self.shape = shape
         self.age = 0.0
@@ -41,6 +41,12 @@ class Particle:
             return v
 
         return normalize(value[0]), normalize(value[1])
+
+    @staticmethod
+    def _normalize_size(size: float | tuple[float, float]):
+        if isinstance(size, (int, float)):
+            return (size, size)
+        return size
 
     def update(self, delta):
         self.velocity.y += self.gravity * delta
