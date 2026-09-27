@@ -36,12 +36,13 @@ system = pyparti.ParticleSystem()
 # Explosion
 system.create_emitter(
     position=(WIDTH / 2, HEIGHT / 2),
-    velocity=((-50, 50), (-50, 50)),
-    lifetime=1.5,
+    velocity=((-100, 100), (-100, 100)),
+    speed=50,
+    lifetime=1,
     color="red",
-    amount=100,
-    size=12,
-    delay=0.25,
+    amount=20,
+    size=10,
+    delay=1,
     shape="rect",
 )
 

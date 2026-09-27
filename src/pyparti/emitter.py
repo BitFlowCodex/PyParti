@@ -10,6 +10,7 @@ class Emitter:
         particle: object,
         amount: int = 5,
         delay: float = 0,
+        speed: float = 0,
     ):
         self.particle = particle
         self.amount = amount
@@ -31,6 +32,7 @@ class Emitter:
             new_particle = Particle(
                 position_range=self.particle.position_range,
                 velocity_range=self.particle.velocity_range,
+                speed_range=self.particle.speed_range,
                 life_time=self.particle.life_time,
                 color=self.particle.color,
                 size=(width, height),
@@ -43,10 +45,15 @@ class Emitter:
             # Position's X and Y
             px_range, py_range = new_particle.position_range
 
-            new_particle.velocity = Vector2(
+            direction = Vector2(
                 uniform(*vx_range),
                 uniform(*vy_range),
-            )
+            ).normalize()
+
+            speed = uniform(*self.particle.speed_range)
+
+            new_particle.velocity = direction * speed
+
             new_particle.position = Vector2(uniform(*px_range), uniform(*py_range))
 
             self.particle_list.append(new_particle)

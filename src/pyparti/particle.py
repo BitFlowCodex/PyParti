@@ -17,7 +17,8 @@ class Particle:
             | tuple[float, tuple[float, float]]
             | tuple[tuple[float, float], tuple[float, float]]
         ),
-        size: tuple[float, float] | tuple[float],
+        speed_range: tuple[float, float] | float | int,
+        size: tuple[float, float] | float | int,
         shape: str = "rect",
         life_time: float = 3.0,
         color: str | tuple = "white",
@@ -25,6 +26,7 @@ class Particle:
     ):
         self.position_range = self._normalize_range(position_range)
         self.velocity_range = self._normalize_range(velocity_range)
+        self.speed_range = self._normalize_speed_range(speed_range)
         self.size = self._normalize_size(size)
 
         self.color = color
@@ -43,14 +45,22 @@ class Particle:
         return normalize(value[0]), normalize(value[1])
 
     @staticmethod
-    def _normalize_size(size: float | tuple[float, float]):
+    def _normalize_size(size: tuple[float, float] | float | int):
         if isinstance(size, (int, float)):
             return (size, size)
         return size
 
+    @staticmethod
+    def _normalize_speed_range(speed: tuple[float, float] | float | int):
+        if isinstance(speed, (int, float)):
+            return (speed, speed)
+        return speed
+
     def update(self, delta):
         self.velocity.y += self.gravity * delta
+
         self.position += self.velocity * delta
+
         self.age += delta
 
     def draw(self, screen):

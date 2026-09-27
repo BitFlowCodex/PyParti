@@ -8,11 +8,12 @@ class ParticleSystem:
         self.emitters: list = []
 
     def create_emitter(
-        self, *, position, velocity, size, lifetime, shape, color, amount, delay
+        self, *, position, velocity, speed, size, lifetime, shape, color, amount, delay
     ):
         particle = Particle(
             position_range=position,
             velocity_range=velocity,
+            speed_range=speed,
             size=size,
             life_time=lifetime,
             shape=shape,
