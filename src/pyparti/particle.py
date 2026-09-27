@@ -11,7 +11,7 @@ class Particle:
             | tuple[float, tuple[float, float]]
             | tuple[tuple[float, float], tuple[float, float]]
         ),
-        velocity_range: (
+        direction_range: (
             tuple[float, float]
             | tuple[tuple[float, float], float]
             | tuple[float, tuple[float, float]]
@@ -25,7 +25,7 @@ class Particle:
         gravity: float = 0.0,
     ):
         self.position_range = self._normalize_range(position_range)
-        self.velocity_range = self._normalize_range(velocity_range)
+        self.direction_range = self._normalize_range(direction_range)
         self.speed_range = self._normalize_speed_range(speed_range)
         self.size = self._normalize_size(size)
 

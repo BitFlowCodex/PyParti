@@ -8,11 +8,22 @@ class ParticleSystem:
         self.emitters: list = []
 
     def create_emitter(
-        self, *, position, velocity, speed, size, lifetime, shape, color, amount, delay
+        self,
+        *,
+        position,
+        direction,
+        speed,
+        size,
+        lifetime,
+        shape,
+        color,
+        amount,
+        delay,
+        spread
     ):
         particle = Particle(
             position_range=position,
-            velocity_range=velocity,
+            direction_range=direction,
             speed_range=speed,
             size=size,
             life_time=lifetime,
@@ -25,6 +36,7 @@ class ParticleSystem:
             particle=particle,
             amount=amount,
             delay=delay,
+            spread=spread,
         )
 
         self.emitters.append(emitter)

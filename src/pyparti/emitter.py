@@ -9,13 +9,15 @@ class Emitter:
         particle_list: list,
         particle: object,
         amount: int = 5,
-        delay: float = 0,
-        speed: float = 0,
+        delay: float = 0.0,
+        spread: float = 0.0,
     ):
         self.particle = particle
         self.amount = amount
         self.particle_list = particle_list
         self.delay = delay
+        self.spread = spread
+
         self.timer = 0
 
     def update(self, dt):
@@ -31,7 +33,7 @@ class Emitter:
         for _ in range(self.amount):
             new_particle = Particle(
                 position_range=self.particle.position_range,
-                velocity_range=self.particle.velocity_range,
+                direction_range=self.particle.direction_range,
                 speed_range=self.particle.speed_range,
                 life_time=self.particle.life_time,
                 color=self.particle.color,
@@ -41,19 +43,25 @@ class Emitter:
             )
 
             # Velocity's X and Y
-            vx_range, vy_range = new_particle.velocity_range
+            dir_x_range, dir_y_range = self.particle.direction_range
             # Position's X and Y
-            px_range, py_range = new_particle.position_range
+            pos_x_range, pos_y_range = self.particle.position_range
 
             direction = Vector2(
-                uniform(*vx_range),
-                uniform(*vy_range),
+                uniform(*dir_x_range),
+                uniform(*dir_y_range),
             ).normalize()
+
+            angle = uniform(-self.spread, self.spread)
+
+            direction = direction.rotate(angle)
 
             speed = uniform(*self.particle.speed_range)
 
             new_particle.velocity = direction * speed
 
-            new_particle.position = Vector2(uniform(*px_range), uniform(*py_range))
+            new_particle.position = Vector2(
+                uniform(*pos_x_range), uniform(*pos_y_range)
+            )
 
             self.particle_list.append(new_particle)
