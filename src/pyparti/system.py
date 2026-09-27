@@ -38,6 +38,9 @@ class ParticleSystem:
             if not particle.is_alive():
                 self.particles.remove(particle)
 
+        for emitter in self.emitters[:]:
+            emitter.update(delta)
+
     # Draws all particles onto the window
     def draw(self, screen):
         for particle in self.particles:

@@ -37,7 +37,7 @@ class Particle:
     def _normalize_range(value):
         def normalize(v):
             if isinstance(v, float | int):
-                return (-v, v)
+                return (v, v)
             return v
 
         return normalize(value[0]), normalize(value[1])

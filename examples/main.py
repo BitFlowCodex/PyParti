@@ -21,16 +21,28 @@ def checkFPS():
 
 system = pyparti.ParticleSystem()
 
+# Rain
+# system.create_emitter(
+#     position=((0, WIDTH), 0),
+#     velocity=(0, HEIGHT),
+#     lifetime=2,
+#     color="blue",
+#     amount=200,
+#     size=10,
+#     delay=0.5,
+#     shape="circle",
+# )
 
-rain = system.create_emitter(
-    position=((0, WIDTH), 0),
-    velocity=(0, HEIGHT),
-    lifetime=2,
-    color="white",
+# Explosion
+system.create_emitter(
+    position=(WIDTH / 2, HEIGHT / 2),
+    velocity=((-50, 50), (-50, 50)),
+    lifetime=1.5,
+    color="red",
     amount=100,
-    size=(10, 10),
-    delay=0.5,
-    shape="circle",
+    size=12,
+    delay=0.25,
+    shape="rect",
 )
 
 
@@ -43,7 +55,6 @@ while running:
             running = False
             sys.exit()
 
-    rain.update(dt)
     system.update(dt)
 
     screen.fill("black")
