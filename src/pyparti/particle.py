@@ -2,122 +2,66 @@ from pygame import Color, Vector2, draw, Rect
 
 
 class Particle:
+    __slots__ = (
+        "x",
+        "y",
+        "vx",
+        "vy",
+        "age",
+        "lifetime",
+        "gravity",
+        "image",
+        "width",
+        "height",
+        "alive",
+    )
 
-    def __init__(
-        self,
-        position_range: (
-            tuple[float, float]
-            | tuple[tuple[float, float], float]
-            | tuple[float, tuple[float, float]]
-            | tuple[tuple[float, float], tuple[float, float]]
-        ),
-        direction_range: (
-            tuple[float, float]
-            | tuple[tuple[float, float], float]
-            | tuple[float, tuple[float, float]]
-            | tuple[tuple[float, float], tuple[float, float]]
-        ),
-        speed_range: tuple[float, float] | float | int,
-        size: tuple[float, float] | float | int,
-        shape: str = "rect",
-        life_time: float = 3.0,
-        color: str | tuple[int, int, int] | list[tuple[int, int, int]] = "white",
-        gravity: float = 0.0,
-    ):
-        self.position_range = self._normalize_range(position_range)
-        self.direction_range = self._normalize_range(direction_range)
-        self.speed_range = self._normalize_pair(speed_range)
-        self.size = self._normalize_pair(size)
+    def __init__(self):
+        self.alive = False
 
-        self.color = self._normalize_color(color)
+        self.x = 0.0
+        self.y = 0.0
 
-        self.life_time = life_time
-        self.gravity = gravity
-        self.shape = shape
+        self.vx = 0.0
+        self.vy = 0.0
+
         self.age = 0.0
+        self.lifetime = 0.0
+        self.gravity = 0.0
 
-        self.position = Vector2(0, 0)
-        self.velocity = Vector2(0, 0)
+        self.image = None
+        self.width = 0
+        self.height = 0
 
-    @staticmethod
-    def _normalize_pair(value: float | int | tuple[float, float]):
-        if isinstance(value, (float, int)):
-            return (value, value)
+    def reset(
+        self,
+        x,
+        y,
+        vx,
+        vy,
+        lifetime,
+        gravity,
+        image,
+    ):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
 
-        return value
+        self.age = 0.0
+        self.lifetime = lifetime
+        self.gravity = gravity
 
-    @staticmethod
-    def _normalize_range(value):
-        if callable(value):
-            return value
+        self.image = image
+        self.width = image.get_width()
+        self.height = image.get_height()
 
-        return (
-            Particle._normalize_pair(value[0]),
-            Particle._normalize_pair(value[1]),
-        )
-
-    @staticmethod
-    def _normalize_color(color: str | tuple | list):
-        if isinstance(color, Color):
-            return [color]
-
-        if isinstance(color, str):
-            return [Color(color)]
-
-        if isinstance(color, tuple) and len(color) in (3, 4):
-            return [Color(color)]
-
-        return [Color(c) for c in color]
+        self.alive = True
 
     def update(self, delta):
-        self.velocity.y += self.gravity * delta
+        self.vy += self.gravity * delta
 
-        self.position += self.velocity * delta
+        self.x += self.vx * delta
+        self.y += self.vy * delta
 
         self.age += delta
-
-    def draw(self, screen):
-        width, height = self.size
-
-        match self.shape:
-            case "circle":
-                draw.circle(
-                    screen,
-                    self.color,
-                    (self.position.x, self.position.y),
-                    width,
-                )
-
-            case "rect":
-                draw.rect(
-                    screen,
-                    self.color,
-                    Rect(
-                        self.position.x,
-                        self.position.y,
-                        width,
-                        height,
-                    ),
-                    border_radius=2,
-                )
-
-            case "ellipse":
-                draw.ellipse(
-                    screen,
-                    self.color,
-                    Rect(
-                        self.position.x,
-                        self.position.y,
-                        width,
-                        height,
-                    ),
-                )
-
-            case _:
-                raise ValueError(
-                    f"Unknown shape: {self.shape!r}, "
-                    "only shapes are ellipse, rect, and circle."
-                )
-
-    def is_alive(self):
-        return self.age < self.life_time

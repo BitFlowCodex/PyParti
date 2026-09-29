@@ -5,18 +5,18 @@ pg.init()
 WIDTH, HEIGHT = 1280, 720
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 clock = pg.time.Clock()
+font = pg.font.Font(None, 64)
 dt = 0
 timer = 0
 
 
 def checkFPS():
-    font = pg.font.Font(None, 64)
     text = font.render(str(int(clock.get_fps())), True, "white")
     textPos = text.get_rect(x=WIDTH / 2, y=10)
     screen.blit(text, textPos)
 
 
-system = pyparti.ParticleSystem()
+system = pyparti.ParticleSystem(max_particles=5000)
 
 
 def rain():
@@ -30,8 +30,9 @@ def rain():
             (3, 96, 179),
             (0, 131, 255),
         ],
-        amount=200,
-        size=15,
+        amount=10,
+        size=12,
+        burstdelay=0.1,
         shape="ellipse",
     )
 
@@ -58,9 +59,9 @@ def explosion():
 def fire():
     system.create_emitter(
         position=(WIDTH / 2, HEIGHT / 2),
-        direction=((0, 1), (4.5, 5)),
-        speed=(50, 100),
-        lifetime=1.5,
+        direction=((-0.1, 0.1), (-10, -9)),
+        speed=(25, 50),
+        lifetime=3,
         color=[
             (255, 0, 0),
             (255, 84, 0),
@@ -68,14 +69,14 @@ def fire():
         ],
         amount=100,
         size=15,
-        burstdelay=1.5,
+        burstdelay=0.5,
+        spawndelay=0,
         shape="rect",
-        spread=180,
+        spread=45,
     )
 
 
-rain()
-
+fire()
 
 running = True
 while running:
