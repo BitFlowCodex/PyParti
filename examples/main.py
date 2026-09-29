@@ -1,9 +1,6 @@
 import pygame as pg
 import sys, pyparti, random
 
-# TODO
-# ! Add gravity param for the particle (instead of only boolean)
-
 pg.init()
 WIDTH, HEIGHT = 1280, 720
 screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -21,31 +18,63 @@ def checkFPS():
 
 system = pyparti.ParticleSystem()
 
-# Rain
-# system.create_emitter(
-#     position=((0, WIDTH), 0),
-#     velocity=(0, HEIGHT),
-#     lifetime=2,
-#     color="blue",
-#     amount=200,
-#     size=10,
-#     delay=0.5,
-#     shape="circle",
-# )
 
-# Explosion
-system.create_emitter(
-    position=(WIDTH / 2, HEIGHT / 2),
-    direction=(1, 0),
-    speed=(50, 100),
-    lifetime=1,
-    color="red",
-    amount=20,
-    size=10,
-    delay=1,
-    shape="rect",
-    spread=180,
-)
+def rain():
+    system.create_emitter(
+        position=((0, WIDTH), 0),
+        direction=(0, HEIGHT),
+        speed=200,
+        lifetime=10,
+        color=[
+            (0, 169, 255),
+            (3, 96, 179),
+            (0, 131, 255),
+        ],
+        amount=200,
+        size=15,
+        shape="ellipse",
+    )
+
+
+def explosion():
+    system.create_emitter(
+        position=(WIDTH / 2, HEIGHT / 2),
+        direction=((0, 1), (4.5, 5)),
+        speed=(50, 500),
+        lifetime=1,
+        color=[
+            (255, 0, 0),
+            (255, 84, 0),
+            (255, 34, 0),
+        ],
+        amount=100,
+        size=15,
+        burstdelay=1,
+        shape="rect",
+        spread=180,
+    )
+
+
+def fire():
+    system.create_emitter(
+        position=(WIDTH / 2, HEIGHT / 2),
+        direction=((0, 1), (4.5, 5)),
+        speed=(50, 100),
+        lifetime=1.5,
+        color=[
+            (255, 0, 0),
+            (255, 84, 0),
+            (255, 34, 0),
+        ],
+        amount=100,
+        size=15,
+        burstdelay=1.5,
+        shape="rect",
+        spread=180,
+    )
+
+
+rain()
 
 
 running = True

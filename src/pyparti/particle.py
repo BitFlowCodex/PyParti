@@ -1,4 +1,4 @@
-import pygame as pg
+from pygame import Color, Vector2, draw, Rect
 
 
 class Particle:
@@ -21,40 +21,53 @@ class Particle:
         size: tuple[float, float] | float | int,
         shape: str = "rect",
         life_time: float = 3.0,
-        color: str | tuple = "white",
+        color: str | tuple[int, int, int] | list[tuple[int, int, int]] = "white",
         gravity: float = 0.0,
     ):
         self.position_range = self._normalize_range(position_range)
         self.direction_range = self._normalize_range(direction_range)
-        self.speed_range = self._normalize_speed_range(speed_range)
-        self.size = self._normalize_size(size)
+        self.speed_range = self._normalize_pair(speed_range)
+        self.size = self._normalize_pair(size)
 
-        self.color = color
+        self.color = self._normalize_color(color)
+
         self.life_time = life_time
         self.gravity = gravity
         self.shape = shape
         self.age = 0.0
 
+        self.position = Vector2(0, 0)
+        self.velocity = Vector2(0, 0)
+
+    @staticmethod
+    def _normalize_pair(value: float | int | tuple[float, float]):
+        if isinstance(value, (float, int)):
+            return (value, value)
+
+        return value
+
     @staticmethod
     def _normalize_range(value):
-        def normalize(v):
-            if isinstance(v, float | int):
-                return (v, v)
-            return v
+        if callable(value):
+            return value
 
-        return normalize(value[0]), normalize(value[1])
-
-    @staticmethod
-    def _normalize_size(size: tuple[float, float] | float | int):
-        if isinstance(size, (int, float)):
-            return (size, size)
-        return size
+        return (
+            Particle._normalize_pair(value[0]),
+            Particle._normalize_pair(value[1]),
+        )
 
     @staticmethod
-    def _normalize_speed_range(speed: tuple[float, float] | float | int):
-        if isinstance(speed, (int, float)):
-            return (speed, speed)
-        return speed
+    def _normalize_color(color: str | tuple | list):
+        if isinstance(color, Color):
+            return [color]
+
+        if isinstance(color, str):
+            return [Color(color)]
+
+        if isinstance(color, tuple) and len(color) in (3, 4):
+            return [Color(color)]
+
+        return [Color(c) for c in color]
 
     def update(self, delta):
         self.velocity.y += self.gravity * delta
@@ -68,19 +81,18 @@ class Particle:
 
         match self.shape:
             case "circle":
-                pg.draw.circle(
+                draw.circle(
                     screen,
                     self.color,
                     (self.position.x, self.position.y),
                     width,
-                    height,
                 )
 
             case "rect":
-                pg.draw.rect(
+                draw.rect(
                     screen,
                     self.color,
-                    pg.Rect(
+                    Rect(
                         self.position.x,
                         self.position.y,
                         width,
@@ -90,10 +102,10 @@ class Particle:
                 )
 
             case "ellipse":
-                pg.draw.ellipse(
+                draw.ellipse(
                     screen,
                     self.color,
-                    pg.Rect(
+                    Rect(
                         self.position.x,
                         self.position.y,
                         width,

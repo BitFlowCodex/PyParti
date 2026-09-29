@@ -10,16 +10,18 @@ class ParticleSystem:
     def create_emitter(
         self,
         *,
-        position,
-        direction,
-        speed,
-        size,
-        lifetime,
-        shape,
-        color,
-        amount,
-        delay,
-        spread
+        position: tuple,
+        direction: tuple,
+        speed: float | tuple[float, float],
+        size: float | tuple[float, float],
+        lifetime: float = 3.0,
+        shape: str = "rect",
+        color: str | tuple | list = "white",
+        amount: int = 5,
+        burstdelay: float = 0.0,
+        spawndelay: float = 0.0,
+        spread: float = 0.0,
+        gravity: float = 0.0,
     ):
         particle = Particle(
             position_range=position,
@@ -29,13 +31,15 @@ class ParticleSystem:
             life_time=lifetime,
             shape=shape,
             color=color,
+            gravity=gravity,
         )
 
         emitter = Emitter(
             particle_list=self.particles,
             particle=particle,
             amount=amount,
-            delay=delay,
+            burst_delay=burstdelay,
+            spawn_delay=spawndelay,
             spread=spread,
         )
 
@@ -45,13 +49,14 @@ class ParticleSystem:
 
     # Updates all particles and removes dead ones
     def update(self, delta):
-        for particle in self.particles[:]:
+        for particle in self.particles:
             particle.update(delta)
 
-            if not particle.is_alive():
-                self.particles.remove(particle)
+        self.particles[:] = [
+            particle for particle in self.particles if particle.is_alive()
+        ]
 
-        for emitter in self.emitters[:]:
+        for emitter in self.emitters:
             emitter.update(delta)
 
     # Draws all particles onto the window

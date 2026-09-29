@@ -1,6 +1,6 @@
 from .particle import Particle
 from pygame import Vector2
-from random import uniform
+from random import uniform, choice
 
 
 class Emitter:
@@ -9,59 +9,77 @@ class Emitter:
         particle_list: list,
         particle: object,
         amount: int = 5,
-        delay: float = 0.0,
+        burst_delay: float = 0.0,
+        spawn_delay: float = 0.0,
         spread: float = 0.0,
     ):
         self.particle = particle
         self.amount = amount
         self.particle_list = particle_list
-        self.delay = delay
+        self.burst_delay = burst_delay
+        self.spawn_delay = spawn_delay
         self.spread = spread
-
-        self.timer = 0
+        self.timer = 0.0
 
     def update(self, dt):
         self.timer -= dt
 
         if self.timer <= 0:
             self.emit()
-            self.timer = self.delay
+            self.timer = self.burst_delay
 
     def emit(self):
-        width, height = self.particle.size
+        template = self.particle
+
+        position = template.position_range
+        if callable(position):
+            position = position()
+        else:
+            pos_x_range, pos_y_range = position
+
+            position = (
+                uniform(*pos_x_range),
+                uniform(*pos_y_range),
+            )
+
+        dir_x_range, dir_y_range = template.direction_range
+        speed_range = template.speed_range
+        color = template.color
+        width, height = template.size
 
         for _ in range(self.amount):
-            new_particle = Particle(
-                position_range=self.particle.position_range,
-                direction_range=self.particle.direction_range,
-                speed_range=self.particle.speed_range,
-                life_time=self.particle.life_time,
-                color=self.particle.color,
-                size=(width, height),
-                gravity=self.particle.gravity,
-                shape=self.particle.shape,
-            )
+            if self.timer <= 0:
 
-            # Velocity's X and Y
-            dir_x_range, dir_y_range = self.particle.direction_range
-            # Position's X and Y
-            pos_x_range, pos_y_range = self.particle.position_range
+                new_particle = Particle(
+                    position_range=template.position_range,
+                    direction_range=template.direction_range,
+                    speed_range=speed_range,
+                    life_time=template.life_time,
+                    color=color,
+                    size=(width, height),
+                    gravity=template.gravity,
+                    shape=template.shape,
+                )
 
-            direction = Vector2(
-                uniform(*dir_x_range),
-                uniform(*dir_y_range),
-            ).normalize()
+                direction = Vector2(
+                    uniform(*dir_x_range),
+                    uniform(*dir_y_range),
+                )
 
-            angle = uniform(-self.spread, self.spread)
+                if direction.length_squared() == 0:
+                    continue
 
-            direction = direction.rotate(angle)
+                direction = direction.normalize()
+                direction = direction.rotate(
+                    uniform(-self.spread, self.spread),
+                )
 
-            speed = uniform(*self.particle.speed_range)
+                speed = uniform(*speed_range)
 
-            new_particle.velocity = direction * speed
+                new_particle.velocity = direction * speed
 
-            new_particle.position = Vector2(
-                uniform(*pos_x_range), uniform(*pos_y_range)
-            )
+                new_particle.position = Vector2(position)
+                new_particle.color = choice(color)
 
-            self.particle_list.append(new_particle)
+                self.particle_list.append(new_particle)
+                self.timer = self.spawn_delay
