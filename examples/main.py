@@ -61,15 +61,14 @@ def fire():
         position=(WIDTH / 2, HEIGHT / 2),
         direction=((-0.1, 0.1), (-10, -9)),
         speed=(25, 50),
-        lifetime=3,
+        lifetime=4,
         color=[
             (255, 0, 0),
             (255, 84, 0),
             (255, 34, 0),
         ],
-        amount=100,
         size=15,
-        spawndelay=0.5,
+        spawndelay=0.05,
         shape="rect",
         spread=45,
     )
