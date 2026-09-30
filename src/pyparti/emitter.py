@@ -26,7 +26,10 @@ class Emitter:
 
         if self.timer <= 0:
             self.emit()
-            self.timer = self.burst_delay
+            if self.burst_delay > 0 and self.spawn_delay < 0:
+                self.timer = self.burst_delay
+            else:
+                self.timer = self.spawn_delay
 
     def emit(self):
         template = self.particle
@@ -82,4 +85,5 @@ class Emitter:
                 new_particle.color = choice(color)
 
                 self.particle_list.append(new_particle)
+
                 self.timer = self.spawn_delay
