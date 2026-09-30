@@ -1,5 +1,5 @@
 import pygame as pg
-import sys, pyparti, random
+import sys, pyparti
 
 pg.init()
 WIDTH, HEIGHT = 1280, 720
@@ -16,7 +16,7 @@ def checkFPS():
     screen.blit(text, textPos)
 
 
-system = pyparti.ParticleSystem()
+system = pyparti.ParticleSystem(max_particles=5000)
 
 
 def rain():
@@ -30,8 +30,9 @@ def rain():
             (3, 96, 179),
             (0, 131, 255),
         ],
-        amount=200,
-        size=15,
+        amount=10,
+        size=12,
+        burstdelay=0.1,
         shape="ellipse",
     )
 
@@ -59,14 +60,13 @@ def fire():
     system.create_emitter(
         position=(WIDTH / 2, HEIGHT / 2),
         direction=((-0.1, 0.1), (-10, -9)),
-        speed=(25, 75),
-        lifetime=3.5,
+        speed=(25, 50),
+        lifetime=4,
         color=[
             (255, 0, 0),
             (255, 84, 0),
             (255, 34, 0),
         ],
-        amount=100,
         size=15,
         spawndelay=0.05,
         shape="rect",
@@ -75,7 +75,6 @@ def fire():
 
 
 fire()
-
 
 running = True
 while running:

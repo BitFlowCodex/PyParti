@@ -1,89 +1,140 @@
-from .particle import Particle
-from pygame import Vector2
 from random import uniform, choice
+import math
 
 
 class Emitter:
     def __init__(
         self,
-        particle_list: list,
-        particle: object,
-        amount: int = 5,
-        burst_delay: float = 0.0,
-        spawn_delay: float = 0.0,
-        spread: float = 0.0,
+        system,
+        position,
+        direction,
+        speed,
+        size,
+        lifetime,
+        shape,
+        color,
+        amount,
+        burst_delay,
+        spawn_delay,
+        spread,
+        gravity,
     ):
-        self.particle = particle
+        self.system = system
+
+        self.position = self._normalize_range(position)
+        self.direction = self._normalize_range(direction)
+
+        self.speed = self._normalize_pair(speed)
+        self.size = self._normalize_pair(size)
+
+        self.lifetime = lifetime
+        self.shape = shape
+        self.color = self._normalize_colors(color)
+
         self.amount = amount
-        self.particle_list = particle_list
+
         self.burst_delay = burst_delay
         self.spawn_delay = spawn_delay
         self.spread = spread
+
+        self.gravity = gravity
+
         self.timer = 0.0
+
+    @staticmethod
+    def _normalize_pair(value):
+        if isinstance(value, (int, float)):
+            return value, value
+
+        return value
+
+    @staticmethod
+    def _normalize_range(value):
+        return (
+            Emitter._normalize_pair(value[0]),
+            Emitter._normalize_pair(value[1]),
+        )
+
+    @staticmethod
+    def _normalize_colors(color):
+        if isinstance(color, str):
+            return [color]
+
+        if isinstance(color, tuple):
+            if len(color) in (3, 4):
+                return [color]
+
+        return list(color)
+
+    def _random_position(self):
+        x_range, y_range = self.position
+
+        return (
+            uniform(*x_range),
+            uniform(*y_range),
+        )
+
+    def _random_direction(self):
+        x_range, y_range = self.direction
+
+        x = uniform(*x_range)
+        y = uniform(*y_range)
+
+        length = math.sqrt(x * x + y * y)
+
+        if length == 0:
+            return 0.0, 0.0
+
+        x /= length
+        y /= length
+
+        angle = uniform(
+            -self.spread,
+            self.spread,
+        )
+
+        radians = math.radians(angle)
+
+        cos_a = math.cos(radians)
+        sin_a = math.sin(radians)
+
+        return (
+            x * cos_a - y * sin_a,
+            x * sin_a + y * cos_a,
+        )
+
+    def emit(self):
+        for _ in range(self.amount):
+            if self.timer <= 0:
+                self._spawn_particle()
+                self.timer = self.spawn_delay
 
     def update(self, dt):
         self.timer -= dt
 
         if self.timer <= 0:
             self.emit()
-            if self.burst_delay > 0 and self.spawn_delay < 0:
+
+            if self.burst_delay > 0 and self.spawn_delay <= 0:
                 self.timer = self.burst_delay
             else:
                 self.timer = self.spawn_delay
 
-    def emit(self):
-        template = self.particle
+    def _spawn_particle(self):
+        x, y = self._random_position()
+        dx, dy = self._random_direction()
 
-        position = template.position_range
-        if callable(position):
-            position = position()
-        else:
-            pos_x_range, pos_y_range = position
+        speed = uniform(*self.speed)
+        color = choice(self.color)
 
-            position = (
-                uniform(*pos_x_range),
-                uniform(*pos_y_range),
-            )
-
-        dir_x_range, dir_y_range = template.direction_range
-        speed_range = template.speed_range
-        color = template.color
-        width, height = template.size
-
-        for _ in range(self.amount):
-            if self.timer <= 0:
-
-                new_particle = Particle(
-                    position_range=template.position_range,
-                    direction_range=template.direction_range,
-                    speed_range=speed_range,
-                    life_time=template.life_time,
-                    color=color,
-                    size=(width, height),
-                    gravity=template.gravity,
-                    shape=template.shape,
-                )
-
-                direction = Vector2(
-                    uniform(*dir_x_range),
-                    uniform(*dir_y_range),
-                )
-
-                if direction.length_squared() == 0:
-                    continue
-
-                direction = direction.normalize()
-                direction = direction.rotate(
-                    uniform(-self.spread, self.spread),
-                )
-
-                speed = uniform(*speed_range)
-
-                new_particle.velocity = direction * speed
-
-                new_particle.position = Vector2(position)
-                new_particle.color = choice(color)
-
-                self.particle_list.append(new_particle)
-
-                self.timer = self.spawn_delay
+        self.system.spawn(
+            x=x,
+            y=y,
+            vx=dx * speed,
+            vy=dy * speed,
+            lifetime=self.lifetime,
+            gravity=self.gravity,
+            shape=self.shape,
+            size=self.size,
+            color=color,
+        )
