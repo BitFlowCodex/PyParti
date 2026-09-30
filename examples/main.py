@@ -5,15 +5,15 @@ pg.init()
 WIDTH, HEIGHT = 1280, 720
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 clock = pg.time.Clock()
-font = pg.font.Font(None, 64)
+# font = pg.font.Font(None, 64)
 dt = 0
 timer = 0
 
 
-def checkFPS():
-    text = font.render(str(int(clock.get_fps())), True, "white")
-    textPos = text.get_rect(x=WIDTH / 2, y=10)
-    screen.blit(text, textPos)
+# def checkFPS():
+#     text = font.render(str(int(clock.get_fps())), True, "white")
+#     textPos = text.get_rect(x=WIDTH / 2, y=10)
+#     screen.blit(text, textPos)
 
 
 system = pyparti.ParticleSystem(max_particles=5000)
@@ -89,7 +89,7 @@ while running:
 
     screen.fill("black")
 
-    checkFPS()
+    # checkFPS()
 
     system.draw(screen)
 
