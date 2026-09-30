@@ -1,5 +1,5 @@
 import pygame as pg
-import sys, pyparti, random
+import sys, pyparti
 
 pg.init()
 WIDTH, HEIGHT = 1280, 720
@@ -69,8 +69,7 @@ def fire():
         ],
         amount=100,
         size=15,
-        burstdelay=0.5,
-        spawndelay=0,
+        spawndelay=0.5,
         shape="rect",
         spread=45,
     )

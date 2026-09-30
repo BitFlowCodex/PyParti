@@ -105,27 +105,36 @@ class Emitter:
 
     def emit(self):
         for _ in range(self.amount):
-            x, y = self._random_position()
-            dx, dy = self._random_direction()
-
-            speed = uniform(*self.speed)
-            color = choice(self.color)
-
-            self.system.spawn(
-                x=x,
-                y=y,
-                vx=dx * speed,
-                vy=dy * speed,
-                lifetime=self.lifetime,
-                gravity=self.gravity,
-                shape=self.shape,
-                size=self.size,
-                color=color,
-            )
+            if self.timer <= 0:
+                self._spawn_particle()
+                self.timer = self.spawn_delay
 
     def update(self, dt):
         self.timer -= dt
 
         if self.timer <= 0:
             self.emit()
-            self.timer = self.burst_delay
+
+            if self.burst_delay > 0 and self.spawn_delay <= 0:
+                self.timer = self.burst_delay
+            else:
+                self.timer = self.spawn_delay
+
+    def _spawn_particle(self):
+        x, y = self._random_position()
+        dx, dy = self._random_direction()
+
+        speed = uniform(*self.speed)
+        color = choice(self.color)
+
+        self.system.spawn(
+            x=x,
+            y=y,
+            vx=dx * speed,
+            vy=dy * speed,
+            lifetime=self.lifetime,
+            gravity=self.gravity,
+            shape=self.shape,
+            size=self.size,
+            color=color,
+        )
