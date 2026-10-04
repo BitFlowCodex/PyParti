@@ -23,7 +23,7 @@ def rain():
     system.create_emitter(
         position=((0, WIDTH), 0),
         direction=(0, HEIGHT),
-        speed=200,
+        speed=400,
         lifetime=10,
         color=[
             (0, 169, 255),
@@ -41,16 +41,16 @@ def explosion():
     system.create_emitter(
         position=(WIDTH / 2, HEIGHT / 2),
         direction=((0, 1), (4.5, 5)),
-        speed=(50, 500),
+        speed=(50, 200),
         lifetime=1,
         color=[
             (255, 0, 0),
             (255, 84, 0),
             (255, 34, 0),
         ],
-        amount=100,
-        size=15,
-        burstdelay=1,
+        amount=200,
+        size=12,
+        burstdelay=1.75,
         shape="rect",
         spread=180,
     )
@@ -74,7 +74,7 @@ def fire():
     )
 
 
-fire()
+rain()
 
 running = True
 while running:
