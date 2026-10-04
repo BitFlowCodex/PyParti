@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyparti"
+version = "0.2.0"
+description = "A fast, beginner-friendly particle system for Pygame."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "BitFlowCodex" }]
+keywords = ["pygame", "particles", "particle-system", "effects"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Games/Entertainment",
+  "Intended Audience :: Developers",
+]
+
+dependencies = [
+  "pygame>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/BitFlowCodex/PyParti"
+Issues = "https://github.com/BitFlowCodex/PyParti/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyparti"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
